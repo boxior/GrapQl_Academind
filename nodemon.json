@@ -1,0 +1,9 @@
+{
+  "env": {
+    "MONGO_USER": "boxior",
+    "MONGO_PASSWORD": "sgP26pV8N8xHEfpb",
+    "MONGO_USER_READ_WRITE": "boxior_read_write",
+    "MONGO_PASSWORD_READ_WRITE": "Et2CHXIWcbQJkTTm",
+    "MONGO_DB": "Academind"
+  }
+}
