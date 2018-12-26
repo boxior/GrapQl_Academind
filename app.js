@@ -1,9 +1,9 @@
 const express = require(`express`);
 const bodyParser = require(`body-parser`);
-const graphqlHttp = require(`express-graphql`)
-const {buildSchema} = require(`graphql`)
-const mongoose = require("mongoose")
-const Event = require("./models/event")
+const graphqlHttp = require(`express-graphql`);
+const {buildSchema} = require(`graphql`);
+const mongoose = require("mongoose");
+const Event = require("./models/event");
 
 const app = express();
 
@@ -45,13 +45,23 @@ app.use(`/graphql`, graphqlHttp({
     `),
     rootValue: {
         events: (args) => {
-
-
-            return events;
+           return Event.find()
+                .then((events) => {
+                    return events.map(event => {
+                        return {
+                            ...event._doc,
+                            _id: event.id
+                        }
+                    })
+                })
+                .catch(err => {
+                    throw err;
+                })
 
         },
         createEvent: (args) => {
             const {title, description, price, date} = args.eventInput;
+            console.error("args.eventInput", args.eventInput);
             const event = new Event({
                 title,
                 description,
@@ -61,7 +71,7 @@ app.use(`/graphql`, graphqlHttp({
             return event.save()
                 .then(result => {
                     console.log("result", result);
-                    return {...result._doc}
+                    return {...result._doc, _id: result.id}
                 })
                 .catch(err => {
                     console.error("err", err);
@@ -74,8 +84,7 @@ app.use(`/graphql`, graphqlHttp({
 
 }));
 
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}
-@cluster0-4ziv6.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`, {useNewUrlParser: true})
+mongoose.connect(`mongodb+srv://boxior:wJ8xSxytsJPIXfqb@cluster0-4ziv6.mongodb.net/test?retryWrites=true`, {useNewUrlParser: true})
     .then(() => {
         app.listen(3000);
     })
